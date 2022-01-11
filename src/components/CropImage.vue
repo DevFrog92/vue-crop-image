@@ -28,11 +28,11 @@
     <button @click="save">
       save
     </button>
-    <img
-      src=""
-      alt=""
-      class="preview"
-    >
+    <div class="preview_wrapper">
+      <img
+        class="preview"
+      >
+    </div>
   </section>
 </template>
 
@@ -89,38 +89,24 @@ export default {
         this.drawCanvas(this.x1, this.y1, this.x2 - this.x1, this.y2 - this.y1)
       }
     },
-    drawCanvas(x, y, width, height) {
+    drawCanvas() {
       this.$refs.cropImage.innerHTML = ''
       this.canvasForCropImage = this.$refs.cropCanvas
       this.img = document.querySelector('.neko_img_original')
-      let w
-      let h
-
-      if (Math.abs(width) <= Math.abs(height)) {
-        h = this.size
-        w = h * width / height
-      } else {
-        w = this.size
-        h = w * height / width
-      }
-
       this.canvasForCropImage.width = 500
       this.canvasForCropImage.height = 500
-      this.w = w
-      this.h = h
-
       // this.img.addEventListener('load', this.imgLoadHandler)
       this.imgLoadHandler()
 
     },
     imgLoadHandler() {
+      this.w = 500
+      this.h = 500
       const RATE = this.img.width / 500
 
-      console.log(RATE)
       const width = this.x2 - this.x1
       const height = this.y2 - this.y1
 
-      console.log(this.x1 * RATE, this.y1 * RATE, width * RATE, height * RATE, (this.w - this.w * 0.9) / 2, (this.h - this.h * 0.9) / 2, this.w * 0.9, this.h * 0.9)
       this.canvasForCropImage.getContext('2d').drawImage(this.img, this.x1 * RATE, this.y1 * RATE, width * RATE, height * RATE, (this.w - this.w * 0.9) / 2, (this.h - this.h * 0.9) / 2, this.w * 0.9, this.h * .9)
       this.$refs.cropImage.append(this.canvasForCropImage)
     },
@@ -145,10 +131,7 @@ export default {
         this.x2 - this.x1,
         this.y2 - this.y1
       )
-      console.log(this.x1,
-        this.y1,
-        this.x2 - this.x1,
-        this.y2 - this.y1)
+
       this.draw = true
     },
     setCanvas(canvasElem) {
@@ -190,6 +173,20 @@ export default {
 .neko_img, .after_image {
 	width: 500px;
 	height: 500px;
+}
+
+.preview_wrapper {
+	border: 1px solid;
+	width: 200px;
+	height: 200px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.preview {
+	width: 100%;
+	height: 100%;
 }
 
 .neko_img_original {
