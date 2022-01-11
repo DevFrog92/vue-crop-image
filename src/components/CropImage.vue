@@ -1,5 +1,15 @@
 <template>
   <section class="crop_image_wrapper">
+    <input
+      id="input"
+      ref="image"
+      type="file"
+      name="image"
+      accept="image/*"
+      multiple="multiple"
+      class="hidden"
+      @change="uploadImage()"
+    >
     <div class="before">
       <canvas
         id="canvas"
@@ -7,7 +17,7 @@
         class="canvas_elem"
       />
       <img
-        src="@/assets/neko.jpeg"
+        :src="url"
         alt="neko"
         class="neko_img"
       >
@@ -21,7 +31,7 @@
       </div>
     </div>
     <img
-      src="@/assets/neko.jpeg"
+      :src="url"
       alt="neko"
       class="neko_img_original"
     >
@@ -40,20 +50,21 @@
 export default {
   data() {
     return {
-      ctx: null,
-      draw: false,
+      canvasForCropImage: null,
       canvasX: null,
       canvasY: null,
+      imgUrl: null,
+      draw: false,
+      img: null,
+      ctx: null,
       x1: null,
       y1: null,
       x2: null,
       y2: null,
-      size: 500,
-      img: null,
-      canvasForCropImage: null,
-      w: null,
       h: null,
-      imgUrl: null,
+      w: null,
+      size: 500,
+      url: null,
     }
   },
   mounted() {
@@ -65,6 +76,13 @@ export default {
     this.setMouseUpEvent(canvas)
   },
   methods: {
+    uploadImage() {
+      let image = this.$refs['image'].files[0]
+
+      this.url = URL.createObjectURL(image)
+
+      console.log(image)
+    },
     save() {
       const prevImage = document.querySelector('.preview')
 
@@ -83,7 +101,7 @@ export default {
     mouseupHandler() {
       this.draw = false
 
-      const threshold = 10
+      const threshold = 50
 
       if (Math.abs(this.x2 - this.x1) > threshold && Math.abs(this.y2 - this.y1) > threshold) {
         this.drawCanvas(this.x1, this.y1, this.x2 - this.x1, this.y2 - this.y1)
@@ -92,22 +110,16 @@ export default {
     drawCanvas() {
       this.$refs.cropImage.innerHTML = ''
       this.canvasForCropImage = this.$refs.cropCanvas
-      this.img = document.querySelector('.neko_img_original')
       this.canvasForCropImage.width = 500
       this.canvasForCropImage.height = 500
-      // this.img.addEventListener('load', this.imgLoadHandler)
-      this.imgLoadHandler()
+      this.img = document.querySelector('.neko_img_original')
 
-    },
-    imgLoadHandler() {
-      this.w = 500
-      this.h = 500
       const RATE = this.img.width / 500
-
       const width = this.x2 - this.x1
       const height = this.y2 - this.y1
+      const reduceRatio = 0.6
 
-      this.canvasForCropImage.getContext('2d').drawImage(this.img, this.x1 * RATE, this.y1 * RATE, width * RATE, height * RATE, (this.w - this.w * 0.9) / 2, (this.h - this.h * 0.9) / 2, this.w * 0.9, this.h * .9)
+      this.canvasForCropImage.getContext('2d').drawImage(this.img, this.x1 * RATE, this.y1 * RATE, width * RATE, height * RATE, (this.size - this.size * reduceRatio) / 2, (this.size - this.size * reduceRatio) / 2, this.size * reduceRatio, this.size * reduceRatio)
       this.$refs.cropImage.append(this.canvasForCropImage)
     },
     mousedownHandler(e) {
@@ -152,47 +164,54 @@ export default {
 
 <style scoped>
 .crop_image_wrapper {
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
-}
-
-.before, .after{
-  border: 1px solid black;
-  flex-direction:column;
   align-items: center;
-  width:500px;
+  display: flex;
+  height: 100vh;
+  justify-content: space-around;
+  width: 100vw;
 }
 
-.canvas_elem {
+.hidden {
 	position: absolute;
+	top: 10px;
 }
 
-.neko_img, .after_image {
-	width: 500px;
+.before, .after {
+  align-items: center;
+  border: 1px solid black;
+  flex-direction: column;
+  width: 500px;
 	height: 500px;
 }
 
+.canvas_elem {
+  position: absolute;
+	z-index: 100;
+}
+
+.neko_img, .after_image {
+  height: 500px;
+  width: 500px;
+}
+
 .preview_wrapper {
-	border: 1px solid;
-	width: 200px;
-	height: 200px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  align-items: center;
+  border: 1px solid;
+  display: flex;
+  height: 200px;
+  justify-content: center;
+  width: 200px;
 }
 
 .preview {
-	width: 100%;
-	height: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .neko_img_original {
-	display: none;
-	object-fit: contain;
-	width: 100%;
-	height: 100%;
+  display: none;
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
 }
 </style>
