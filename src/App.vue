@@ -1,22 +1,22 @@
 <template>
-	<div id="app">
-		<crop-image />
-	</div>
+  <div id="app">
+    <crop-image />
+  </div>
 </template>
 
 <script>
-import CropImage from './components/CropImage.vue';
+import CropImage from './components/CropImage.vue'
 export default {
-	components: { CropImage },
-};
+  components: { CropImage, },
+}
 </script>
 
 <style lang="scss">
+* {
+	margin: 0;
+	padding: 0;
+}
+
 #app {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
-	color: #2c3e50;
 }
 </style>
