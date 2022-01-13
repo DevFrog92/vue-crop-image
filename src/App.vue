@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <crop-image />
+    <image-cropper />
   </div>
 </template>
 
 <script>
-import CropImage from './components/CropImage.vue'
+import ImageCropper from './components/ImageCropper.vue'
 export default {
-  components: { CropImage, },
+  components: { ImageCropper, },
 }
 </script>
 
