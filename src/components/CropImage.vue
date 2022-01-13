@@ -13,7 +13,8 @@
     <div class="before">
       <canvas
         id="canvas"
-        ref="canvas"
+        key="crop"
+        ref="canvasForCrop"
         class="canvas_elem"
       />
       <img
@@ -68,7 +69,7 @@ export default {
     }
   },
   mounted() {
-    const canvas = this.$refs.canvas
+    const canvas = this.$refs.canvasForCrop
 
     this.setCanvas(canvas)
     this.setMouseDownEvent(canvas)
@@ -125,6 +126,7 @@ export default {
     mousedownHandler(e) {
       this.x1 = parseInt(e.clientX - this.canvasX)
       this.y1 = parseInt(e.clientY - this.canvasY)
+      console.log(this.x1, this.y1)
       this.draw = true
     },
     mousemoveHandler(e) {
@@ -132,7 +134,7 @@ export default {
         return
       }
 
-      const canvasElem = this.$refs.canvas
+      const canvasElem = this.$refs.canvasForCrop
 
       this.x2 = parseInt(e.clientX - this.canvasX)
       this.y2 = parseInt(e.clientY - this.canvasY)
@@ -147,11 +149,13 @@ export default {
       this.draw = true
     },
     setCanvas(canvasElem) {
+      console.log('canvas', canvasElem.getBoundingClientRect())
       canvasElem.width = 500
       canvasElem.height = 500
       this.ctx = canvasElem.getContext('2d')
       this.canvasX = canvasElem.getBoundingClientRect().left
       this.canvasY = canvasElem.getBoundingClientRect().top
+      console.log(this.canvasX, this.canvasY)
       this.setCanvasStroke(this.ctx)
     },
     setCanvasStroke(ctx) {
@@ -166,7 +170,7 @@ export default {
 .crop_image_wrapper {
   align-items: center;
   display: flex;
-  height: 100vh;
+  height: 100%;
   justify-content: space-around;
   width: 100vw;
 }

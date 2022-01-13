@@ -58,7 +58,6 @@ export default {
 
 .img-container {
   width: 60%;
-  height: 100vh;
   margin-right: 1rem;
 }
 
